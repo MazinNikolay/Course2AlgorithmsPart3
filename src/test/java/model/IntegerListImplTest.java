@@ -3,11 +3,12 @@ package model;
 import org.example.exceptions.IndexOutOfRangeException;
 import org.example.exceptions.InvalidArgException;
 import org.example.exceptions.NotFoundException;
-import org.example.exceptions.OutOfBoundsExceptions;
 import org.example.interfaces.IntegerList;
 import org.example.model.IntegerListImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,15 +33,6 @@ class IntegerListImplTest {
         assertThrows(InvalidArgException.class, () -> out.add(null));
     }
 
-    @Test
-    void checkOutOfBoundMethod() {
-        out.add(111);
-        out.add(222);
-        out.add(333);
-        out.add(444);
-        out.add(555);
-        assertThrows(OutOfBoundsExceptions.class, () -> out.add(666));
-    }
 
     @Test
     void addToPositionCorrect() {
@@ -183,6 +175,7 @@ class IntegerListImplTest {
         out.add(2);
         Integer[] actualArr = out.toArray();
         out.sortArray(actualArr);
+        System.out.println(Arrays.toString(actualArr));
         Integer[] expectedArr = {1, 2, 3};
         assertArrayEquals(expectedArr, actualArr);
     }
@@ -196,6 +189,18 @@ class IntegerListImplTest {
         out.sortArray(actualArr);
         boolean actual = out.binarySearch(actualArr, 2);
         boolean expected = true;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void grow() {
+        out.add(111);
+        out.add(222);
+        out.add(111);
+        out.add(111);
+        out.grow();
+        int expected = 6;
+        int actual = out.getArrayList().length;
         assertEquals(expected, actual);
     }
 }

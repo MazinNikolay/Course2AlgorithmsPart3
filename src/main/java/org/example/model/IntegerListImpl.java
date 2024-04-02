@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class IntegerListImpl implements IntegerList {
-    private final Integer[] arrayList;
+    private Integer[] arrayList;
     private int actualSize;
 
     public IntegerListImpl(int arraySize) {
@@ -162,15 +162,34 @@ public class IntegerListImpl implements IntegerList {
     }
 
     public void sortArray(Integer[] array) {
-        for (int i = 0; i < array.length - 1; i++) {
-            for (int j = 0; j < array.length - 1 - i; j++) {
-                if (array[j] > array[j + 1]) {
-                    int temp = array[j];
-                    array[j] = array[j + 1];
-                    array[j + 1] = temp;
-                }
+        quickSort(array, 0, actualSize - 1);
+    }
+
+    private void quickSort(Integer[] arr, int begin, int end) {
+        if (begin < end) {
+            int partitionIndex = partition(arr, begin, end);
+            quickSort(arr, begin, partitionIndex - 1);
+            quickSort(arr, partitionIndex + 1, end);
+        }
+    }
+
+    private int partition(Integer[] arr, int begin, int end) {
+        int pivot = arr[end];
+        int i = (begin - 1);
+        for (int j = begin; j < end; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+                swapElements(arr, i, j);
             }
         }
+        swapElements(arr, i + 1, end);
+        return i + 1;
+    }
+
+    private void swapElements(Integer[] arr, int left, int right) {
+        int temp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = temp;
     }
 
     public boolean binarySearch(Integer[] array, Integer arg) {
@@ -188,6 +207,10 @@ public class IntegerListImpl implements IntegerList {
             }
         }
         return false;
+    }
+
+    public void grow() {
+        arrayList = Arrays.copyOf(arrayList, actualSize + actualSize / 2);
     }
 
     private void isValidArgument(Integer arg) {
@@ -210,7 +233,7 @@ public class IntegerListImpl implements IntegerList {
 
     private void isInBound() {
         if (actualSize >= arrayList.length) {
-            throw new OutOfBoundsExceptions();
+            grow();
         }
     }
 
